@@ -1,5 +1,10 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common'
-import { ConflictException } from '@nestjs/common'
+import {
+  Body,
+  ConflictException,
+  Controller,
+  HttpCode,
+  Post,
+} from '@nestjs/common'
 
 import { PrismaService } from '../prisma/prisma.service'
 
@@ -10,7 +15,7 @@ export class CreateAccountController {
   @Post()
   @HttpCode(201)
   async handle(
-    @Body() body: { email: string, name: string, password: string },
+    @Body() body: { email: string; name: string; password: string },
   ) {
     const { name, email, password } = body
 
