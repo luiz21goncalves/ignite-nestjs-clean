@@ -4,16 +4,28 @@ import {
   Controller,
   HttpCode,
   Post,
+  UsePipes,
 } from '@nestjs/common'
 import {
+  ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiTags,
 } from '@nestjs/swagger'
 import { hash } from 'bcryptjs'
+import { z } from 'zod'
 
+import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { PrismaService } from '../prisma/prisma.service'
+
+const createAccountBodySchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string().min(8),
+})
+
+type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>
 
 @ApiTags('Accounts')
 @Controller('/accounts')
@@ -23,11 +35,11 @@ export class CreateAccountController {
   @Post()
   @HttpCode(201)
   @ApiCreatedResponse()
+  @ApiBadRequestResponse()
   @ApiConflictResponse()
   @ApiInternalServerErrorResponse()
-  async handle(
-    @Body() body: { email: string; name: string; password: string },
-  ) {
+  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
+  async handle(@Body() body: CreateAccountBodySchema) {
     const { name, email, password } = body
 
     const userWithSameEmail = await this.prisma.user.findUnique({
