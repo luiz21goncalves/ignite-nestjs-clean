@@ -1,0 +1,16 @@
+services:
+  postgres:
+    container_name: ignite-nestjs-clean
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ignite
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: ignite-nestjs-clean
+      POSTGRES_DATA: /data/postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/data/postgres
+
+volumes:
+  postgres_data:
