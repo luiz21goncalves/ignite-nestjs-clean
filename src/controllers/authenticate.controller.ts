@@ -6,7 +6,12 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { ApiTags } from '@nestjs/swagger'
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { compare } from 'bcryptjs'
 import { z } from 'zod'
 
@@ -29,6 +34,9 @@ export class AuthenticateController {
   ) {}
 
   @Post()
+  @ApiCreatedResponse()
+  @ApiBadRequestResponse()
+  @ApiInternalServerErrorResponse()
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body
