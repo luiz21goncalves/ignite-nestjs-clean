@@ -2,7 +2,6 @@ import {
   Body,
   ConflictException,
   Controller,
-  HttpCode,
   Post,
   UsePipes,
 } from '@nestjs/common'
@@ -33,7 +32,6 @@ export class CreateAccountController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Post()
-  @HttpCode(201)
   @ApiCreatedResponse()
   @ApiBadRequestResponse()
   @ApiConflictResponse()
