@@ -5,16 +5,26 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common'
+import {
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { hash } from 'bcryptjs'
 
 import { PrismaService } from '../prisma/prisma.service'
 
+@ApiTags('Accounts')
 @Controller('/accounts')
 export class CreateAccountController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Post()
   @HttpCode(201)
+  @ApiCreatedResponse()
+  @ApiConflictResponse()
+  @ApiInternalServerErrorResponse()
   async handle(
     @Body() body: { email: string; name: string; password: string },
   ) {
