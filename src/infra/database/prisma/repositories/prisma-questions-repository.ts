@@ -11,20 +11,39 @@ import { PrismaService } from '../prisma.service'
 export class PrismaQuestionsRepository implements QuestionsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(question: Question): Promise<void> {
-    throw new Error('Method not implemented.')
+  async create(question: Question): Promise<void> {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.create({
+      data,
+    })
   }
 
-  delete(question: Question): Promise<void> {
-    throw new Error('Method not implemented.')
+  async delete(question: Question): Promise<void> {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.delete({
+      where: { id: data.id },
+    })
   }
 
-  save(question: Question): Promise<void> {
-    throw new Error('Method not implemented.')
+  async save(question: Question): Promise<void> {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.update({
+      data,
+      where: { id: data.id },
+    })
   }
 
-  findBySlug(slug: string): Promise<Question | null> {
-    throw new Error('Method not implemented.')
+  async findBySlug(slug: string): Promise<Question | null> {
+    const question = await this.prisma.question.findUnique({ where: { slug } })
+
+    if (question) {
+      return PrismaQuestionMapper.toDomain(question)
+    }
+
+    return null
   }
 
   async findById(id: string): Promise<Question | null> {
@@ -37,7 +56,15 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     return null
   }
 
-  findManyRecent(params: PaginationParams): Promise<Question[]> {
-    throw new Error('Method not implemented.')
+  async findManyRecent({ page }: PaginationParams): Promise<Question[]> {
+    const ITENS_PER_PAGE = 20
+
+    const questions = await this.prisma.question.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: ITENS_PER_PAGE,
+      skip: (page - 1) * ITENS_PER_PAGE,
+    })
+
+    return questions.map(PrismaQuestionMapper.toDomain)
   }
 }
