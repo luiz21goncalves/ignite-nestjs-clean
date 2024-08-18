@@ -42,6 +42,7 @@ describe('Create account (e2e)', () => {
       name,
       email,
       password: expect.any(String),
+      role: 'STUDENT',
     })
   })
 })

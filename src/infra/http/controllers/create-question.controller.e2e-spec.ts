@@ -62,6 +62,7 @@ describe('Create question (e2e)', () => {
         authorId: user.id,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        bestAnswerId: null,
       },
     ])
   })
