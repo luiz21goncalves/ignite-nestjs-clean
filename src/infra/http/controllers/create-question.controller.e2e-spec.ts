@@ -5,10 +5,10 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { beforeAll, describe, expect, test } from 'vitest'
 
-import { AppModule } from '@/app.module'
-import { PrismaService } from '@/prisma/prisma.service'
+import { AppModule } from '@/infra/app.module'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
-describe('Fetch recent questions (e2e)', () => {
+describe('Create question (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -25,7 +25,7 @@ describe('Fetch recent questions (e2e)', () => {
     await app.init()
   })
 
-  test('[get] /questions', async () => {
+  test('[post] /questions', async () => {
     const user = await prisma.user.create({
       data: {
         email: faker.internet.email(),
@@ -34,37 +34,35 @@ describe('Fetch recent questions (e2e)', () => {
       },
     })
 
-    await prisma.question.createMany({
-      data: [
-        {
-          authorId: user.id,
-          title: faker.lorem.sentence(),
-          content: faker.lorem.text(),
-          slug: faker.lorem.slug(),
-        },
-        {
-          authorId: user.id,
-          title: faker.lorem.sentence(),
-          content: faker.lorem.text(),
-          slug: faker.lorem.slug(),
-        },
-        {
-          authorId: user.id,
-          title: faker.lorem.sentence(),
-          content: faker.lorem.text(),
-          slug: faker.lorem.slug(),
-        },
-      ],
-    })
-
     const accessToken = jwt.sign({ sub: user.id })
 
-    const response = await request(app.getHttpServer())
-      .get('/questions')
-      .auth(accessToken, { type: 'bearer' })
+    const title = faker.lorem.sentence()
+    const content = faker.lorem.text()
 
-    expect(response.statusCode).toBe(200)
-    expect(response.body).toStrictEqual({ questions: expect.any(Array) })
-    expect(response.body.questions).toHaveLength(3)
+    const response = await request(app.getHttpServer())
+      .post('/questions')
+      .auth(accessToken, { type: 'bearer' })
+      .send({
+        title,
+        content,
+      })
+
+    expect(response.statusCode).toBe(201)
+
+    const questionOnDatabase = await prisma.question.findMany({
+      where: { authorId: user.id },
+    })
+
+    expect(questionOnDatabase).toStrictEqual([
+      {
+        id: expect.any(String),
+        slug: expect.any(String),
+        title,
+        content,
+        authorId: user.id,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      },
+    ])
   })
 })

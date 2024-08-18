@@ -8,11 +8,12 @@ import {
 } from '@nestjs/swagger'
 import { z } from 'zod'
 
-import { CurrentUser } from '../auth/current-user-decorator'
-import { UserPayload } from '../auth/jwt.strategy'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
+import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { PrismaService } from '../prisma/prisma.service'
 
 const createQuestionBodySchema = z.object({
   title: z.string(),

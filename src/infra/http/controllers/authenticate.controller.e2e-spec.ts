@@ -1,13 +1,14 @@
 import { faker } from '@faker-js/faker'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
+import { hash } from 'bcryptjs'
 import request from 'supertest'
 import { beforeAll, describe, expect, test } from 'vitest'
 
-import { AppModule } from '@/app.module'
-import { PrismaService } from '@/prisma/prisma.service'
+import { AppModule } from '@/infra/app.module'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
-describe('Create account (e2e)', () => {
+describe('Authenticate (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
 
@@ -22,26 +23,28 @@ describe('Create account (e2e)', () => {
     await app.init()
   })
 
-  test('[post] /accounts', async () => {
+  test('[post] /sessions', async () => {
     const name = faker.person.fullName()
     const email = faker.internet.email()
     const password = faker.internet.password()
+    const hashedPassword = await hash(password, 2)
 
-    const response = await request(app.getHttpServer()).post('/accounts').send({
-      name,
+    await prisma.user.create({
+      data: {
+        email,
+        name,
+        password: hashedPassword,
+      },
+    })
+
+    const response = await request(app.getHttpServer()).post('/sessions').send({
       email,
       password,
     })
 
     expect(response.statusCode).toBe(201)
-
-    const userOnDatabase = await prisma.user.findUnique({ where: { email } })
-
-    expect(userOnDatabase).toStrictEqual({
-      id: expect.any(String),
-      name,
-      email,
-      password: expect.any(String),
+    expect(response.body).toStrictEqual({
+      access_token: expect.any(String),
     })
   })
 })
