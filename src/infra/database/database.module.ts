@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 
+import { QuestionsRepository } from '@/domain/forum/application/repositories/questions-repository'
+
 import { PrismaService } from '../database/prisma/prisma.service'
 import { PrismaAnswerAttachmentsRepository } from './prisma/repositories/prisma-answer-attachments-repository'
 import { PrismaAnswersRepository } from './prisma/repositories/prisma-answers-repository'
@@ -17,7 +19,7 @@ import { PrismaQuestionsRepository } from './prisma/repositories/prisma-question
     PrismaNotificationsRepository,
     PrismaQuestionAttachmentsRepository,
     PrismaQuestionCommentsRepository,
-    PrismaQuestionsRepository,
+    { useClass: PrismaQuestionsRepository, provide: QuestionsRepository },
   ],
   exports: [
     PrismaService,
@@ -27,7 +29,7 @@ import { PrismaQuestionsRepository } from './prisma/repositories/prisma-question
     PrismaNotificationsRepository,
     PrismaQuestionAttachmentsRepository,
     PrismaQuestionCommentsRepository,
-    PrismaQuestionsRepository,
+    QuestionsRepository,
   ],
 })
 export class DatabaseModule {}
