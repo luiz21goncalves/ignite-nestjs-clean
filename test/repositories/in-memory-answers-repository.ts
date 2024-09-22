@@ -6,7 +6,7 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 
 export class InMemoryAnswersRepository implements AnswersRepository {
-  private items: Answer[]
+  items: Answer[]
 
   constructor(
     private readonly answerAttachmentsRepository: AnswerAttachmentsRepository,

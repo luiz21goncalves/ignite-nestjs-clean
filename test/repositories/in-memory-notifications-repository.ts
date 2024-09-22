@@ -4,7 +4,7 @@ import { Notification } from '@/domain/notification/enterprise/entities/notifica
 export class InMemoryNotificationsRepository
   implements NotificationsRepository
 {
-  public items: Notification[]
+  items: Notification[]
 
   constructor() {
     this.items = []

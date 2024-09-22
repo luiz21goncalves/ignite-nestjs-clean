@@ -4,7 +4,7 @@ import { QuestionAttachment } from '@/domain/forum/enterprise/entities/question-
 export class InMemoryQuestionAttachmentsRepository
   implements QuestionAttachmentsRepository
 {
-  public items: QuestionAttachment[]
+  items: QuestionAttachment[]
 
   constructor() {
     this.items = []

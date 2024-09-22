@@ -6,7 +6,7 @@ import { QuestionComment } from '@/domain/forum/enterprise/entities/question-com
 export class InMemoryQuestionCommentsRepository
   implements QuestionCommentsRepository
 {
-  private items: QuestionComment[]
+  items: QuestionComment[]
 
   constructor() {
     this.items = []
