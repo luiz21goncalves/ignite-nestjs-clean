@@ -2,7 +2,7 @@ import { Either, left, right } from '@/core/either'
 
 import { Encrypter } from '../cryptography/encrypter'
 import { HashComparer } from '../cryptography/hash-comparer'
-import { StudentRepository } from '../repositories/students-repository'
+import { StudentsRepository } from '../repositories/students-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 type AuthenticateStudentUseCaseRequest = {
@@ -17,7 +17,7 @@ type AuthenticateStudentUseCaseResponse = Either<
 
 export class AuthenticateStudentUseCase {
   constructor(
-    private readonly studentsRepository: StudentRepository,
+    private readonly studentsRepository: StudentsRepository,
     private readonly hashComparer: HashComparer,
     private readonly encrypter: Encrypter,
   ) {}
