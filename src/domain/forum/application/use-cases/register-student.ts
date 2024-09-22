@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { Either, left, right } from '@/core/either'
 
 import { Student } from '../../enterprise/entities/student'
@@ -16,6 +18,7 @@ type RegisterStudentUseCaseResponse = Either<
   { student: Student }
 >
 
+@Injectable()
 export class RegisterStudentUseCase {
   constructor(
     private readonly studentsRepository: StudentsRepository,

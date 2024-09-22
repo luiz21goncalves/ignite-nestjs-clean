@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { Either, left, right } from '@/core/either'
 
 import { Encrypter } from '../cryptography/encrypter'
@@ -15,6 +17,7 @@ type AuthenticateStudentUseCaseResponse = Either<
   { accessToken: string }
 >
 
+@Injectable()
 export class AuthenticateStudentUseCase {
   constructor(
     private readonly studentsRepository: StudentsRepository,
